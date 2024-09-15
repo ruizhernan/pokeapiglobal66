@@ -19,7 +19,7 @@
         />
         <FavoriteButton
           :isFavorite="isFavoriteStatus"
-          @toggle-favorite="toggleFavorite(pokemon.name)"
+          @toggle-favorite="toggleFavorite(pokemon)"
         />
       </div>
     </div>
@@ -58,7 +58,6 @@ export default {
     };
   },
   computed: {
-
     isFavoriteStatus() {
       return this.$store.getters.isFavorite(this.pokemon.name);
     }
@@ -77,21 +76,21 @@ export default {
   },
   methods: {
     closeModal() {
-        this.$emit('close');
+      this.$emit('close');
     },
     async fetchPokemonDetails() {
-        try {
-            const data = await getPokemonDetails(this.pokemon.name);
-            this.pokemonImage = data.imageUrl;
-            this.pokemon.weight = data.weight;
-            this.pokemon.height = data.height;
-            this.pokemon.types = data.types;
-        } catch (error) {
-            console.error('Error fetching Pokémon details: ', error);
-        }
+      try {
+        const data = await getPokemonDetails(this.pokemon.name);
+        this.pokemonImage = data.imageUrl;
+        this.pokemon.weight = data.weight;
+        this.pokemon.height = data.height;
+        this.pokemon.types = data.types;
+      } catch (error) {
+        console.error('Error fetching Pokémon details: ', error);
+      }
     },
-    toggleFavorite(pokemonName) {
-      this.$store.dispatch('toggleFavorite', { name: pokemonName });
+    toggleFavorite(pokemon) {
+      this.$store.dispatch('toggleFavorite', pokemon);
     },
     copyToClipboard() {
       const pokemonData = `Name: ${this.pokemon.name}, Weight: ${this.pokemon.weight}, Height: ${this.pokemon.height}, Types: ${this.pokemon.types}`;
@@ -192,7 +191,7 @@ export default {
   background-image: url('@/assets/background.png');
   background-size: cover;
   background-position: center;
-  margin:-20px;
+  margin: -20px;
   margin-bottom: 10px;
   padding: 0 0; 
 }
