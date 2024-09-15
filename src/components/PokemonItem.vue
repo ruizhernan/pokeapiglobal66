@@ -1,46 +1,42 @@
 <template>
-    <li class="pokemon-item">
-      <span class="pokemon-name">{{ pokemon.name }}</span>
-      <button class="favorite-btn" @click="toggleFavorite">
-        <img :src="isFavorite ? favActive : favDisable" alt="Favorite" class="favorite-icon" />
-      </button>
-    </li>
-  </template>
-  
-  <script>
-  import favDisable from "@/assets/favDisable.png";
-  import favActive from "@/assets/favActive.png";
-  
-  export default {
-    name: "PokemonItem",
-    props: {
-      pokemon: {
-        type: Object,
-        required: true,
-      },
+  <li class="pokemon-item" >
+    <span class="pokemon-name" @click="emitSelect">{{ pokemon.name }}</span>
+    <FavoriteButton
+      :isFavorite="$store.getters.isFavorite(pokemon.name)"
+      @toggle-favorite="toggleFavorite"
+    />
+  </li>
+</template>
+
+<script>
+
+import FavoriteButton from "./FavoriteButton.vue";
+import favDisable from "@/assets/favDisable.png";
+import favActive from "@/assets/favActive.png";
+
+
+export default {
+  name: "PokemonItem",
+  props: {
+    pokemon: {
+      type: Object,
+      required: true,
     },
-    data() {
-      return {
-        favActive,
-        favDisable,
-      };
+  },
+  components: {
+    FavoriteButton,
+  },
+  methods: {
+    toggleFavorite() {
+      this.$store.dispatch('toggleFavorite', this.pokemon);
     },
-    computed: {
-      isFavorite() {
-        return this.$store.getters.isFavorite(this.pokemon.name);
-      },
+    emitSelect() {
+      this.$emit('select', this.pokemon);
     },
-    methods: {
-      toggleFavorite() {
-        if (this.isFavorite) {
-          this.$store.commit('removeFavorite', this.pokemon.name);
-        } else {
-          this.$store.commit('addFavorite', this.pokemon);
-        }
-      },
-    },
-  };
-  </script>
+  },
+};
+</script>
+
   
   <style scoped>
   .pokemon-item {

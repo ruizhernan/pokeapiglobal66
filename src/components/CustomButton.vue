@@ -6,8 +6,6 @@
   </template>
   
   <script>
-  import list from '@/assets/list.png';
-  import seeFavs from '@/assets/seeFavs.png';
   
   export default {
     name: "CustomButton",

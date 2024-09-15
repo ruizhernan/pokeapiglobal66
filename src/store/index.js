@@ -1,31 +1,33 @@
 import { createStore } from 'vuex';
+import { getPokemonList } from '@/services/pokemonService';
 
 export default createStore({
   state() {
     return {
       pokemons: [],
-      favorites: JSON.parse(localStorage.getItem('favorites')) || [],
+      favorites: [],
       offset: 0,
-      limit: 15,
+      limit: 8,
     };
   },
   mutations: {
     setPokemons(state, pokemons) {
       state.pokemons = pokemons;
     },
-    setFavorites(state, favorites) {
+    setFavorites(state, favorites){
       state.favorites = favorites;
-      localStorage.setItem('favorites', JSON.stringify(favorites));
     },
     addFavorite(state, pokemon) {
       if (!state.favorites.find(fav => fav.name === pokemon.name)) {
         state.favorites.push(pokemon);
         localStorage.setItem('favorites', JSON.stringify(state.favorites));
+        console.log('added from favorites:', state.favorites);
       }
     },
-    removeFavorite(state, pokemonName) {
-      state.favorites = state.favorites.filter(fav => fav.name !== pokemonName);
+    removeFavorite(state, pokemon) {
+      state.favorites = state.favorites.filter(fav => fav.name !== pokemon.name);
       localStorage.setItem('favorites', JSON.stringify(state.favorites));
+      console.log('Removed from favorites:', state.favorites);
     },
     setOffset(state, offset) {
       state.offset = offset;
@@ -34,17 +36,23 @@ export default createStore({
   actions: {
     async fetchPokemons({ commit, state }) {
       try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${state.offset}&limit=${state.limit}`);
-        const data = await response.json();
-        commit('setPokemons', data.results);
+        const pokemons = await getPokemonList(state.limit, state.offset);
+        commit('setPokemons', pokemons);
       } catch (error) {
         console.error('Error fetching pokemons:', error);
       }
     },
-    loadMorePokemons({ commit, dispatch, state }) {
-      const newOffset = state.offset + state.limit;
-      commit('setOffset', newOffset);
-      dispatch('fetchPokemons');
+    loadFavorites({ commit }){
+      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      commit('setFavorites', favorites);
+    },
+    toggleFavorite({ commit, state }, pokemon) {
+      
+      if (state.favorites.some(fav => fav.name === pokemon.name)) {
+        commit('removeFavorite', pokemon);
+      } else {
+        commit('addFavorite', pokemon);
+      }
     },
   },
   getters: {
