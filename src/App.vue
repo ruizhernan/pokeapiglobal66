@@ -8,8 +8,8 @@
 export default {
   name: "App",
   created() {
-    this.$store.dispatch('loadFavorites');
-  }
+    this.$store.dispatch("loadFavorites");
+  },
 };
 </script>
 
@@ -18,6 +18,6 @@ export default {
   font-family: Lato, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  background-color: #F9F9F9;
+  background-color: #f9f9f9;
 }
 </style>

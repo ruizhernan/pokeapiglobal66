@@ -1,6 +1,9 @@
 <template>
   <button @click="toggleFavorite" class="favorite-button">
-    <img :src="isFavorite ? activeIcon : inactiveIcon" :alt="isFavorite ? 'Favorite active' : 'Favorite inactive'" />
+    <img
+      :src="isFavorite ? activeIcon : inactiveIcon"
+      :alt="isFavorite ? 'Favorite active' : 'Favorite inactive'"
+    />
   </button>
 </template>
 
@@ -9,7 +12,7 @@ import favActive from "@/assets/favActive.png";
 import favDisable from "@/assets/favDisable.png";
 
 export default {
-  name: 'FavoriteButton',
+  name: "FavoriteButton",
   props: {
     isFavorite: {
       type: Boolean,
@@ -18,7 +21,7 @@ export default {
   },
   methods: {
     toggleFavorite() {
-      this.$emit('toggle-favorite');
+      this.$emit("toggle-favorite");
     },
   },
   computed: {

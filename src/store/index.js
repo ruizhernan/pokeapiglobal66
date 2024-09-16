@@ -1,10 +1,10 @@
-import { createStore } from 'vuex';
-import { getPokemonList } from '@/services/pokemonService';
+import { createStore } from "vuex";
+import { getPokemonList } from "@/services/pokemonService";
 
 export default createStore({
   state() {
     return {
-      pokemons: [], 
+      pokemons: [],
       favorites: [],
       offset: 0,
       limit: 8,
@@ -18,57 +18,57 @@ export default createStore({
       return state.favorites;
     },
     isFavorite: (state) => (pokemonName) => {
-      return state.favorites.some(fav => fav.name === pokemonName);
+      return state.favorites.some((fav) => fav.name === pokemonName);
     },
   },
   mutations: {
-    // Establece la lista de Pokémon
     setPokemons(state, pokemons) {
       state.pokemons = pokemons;
     },
-    // Establece los Pokémon favoritos
+
     setFavorites(state, favorites) {
       state.favorites = favorites;
     },
-    // Agrega un Pokémon a la lista de favoritos
+    //Agregar / Quitar favoritos usando el localstorage
     addFavorite(state, pokemon) {
-      if (!state.favorites.some(fav => fav.name === pokemon.name)) {
+      if (!state.favorites.some((fav) => fav.name === pokemon.name)) {
         state.favorites.push(pokemon);
-        localStorage.setItem('favorites', JSON.stringify(state.favorites));
-        console.log('Added to favorites:', state.favorites);
+        localStorage.setItem("favorites", JSON.stringify(state.favorites));
+        console.log("Added to favorites:", state.favorites);
       }
     },
-    // Elimina un Pokémon de la lista de favoritos
     removeFavorite(state, pokemon) {
-      state.favorites = state.favorites.filter(fav => fav.name !== pokemon.name);
-      localStorage.setItem('favorites', JSON.stringify(state.favorites));
-      console.log('Removed from favorites:', state.favorites);
+      state.favorites = state.favorites.filter(
+        (fav) => fav.name !== pokemon.name
+      );
+      localStorage.setItem("favorites", JSON.stringify(state.favorites));
+      console.log("Removed from favorites:", state.favorites);
     },
     setOffset(state, offset) {
       state.offset = offset;
     },
   },
   actions: {
-    // Obtiene la lista de Pokémon desde el servicio y actualiza el estado
+    //Consumo del servicio que hace fetch a la API
     async fetchPokemons({ commit, state }) {
       try {
         const pokemons = await getPokemonList(state.limit, state.offset);
-        commit('setPokemons', pokemons);
+        commit("setPokemons", pokemons);
       } catch (error) {
-        console.error('Error fetching pokemons:', error);
+        console.error("Error fetching pokemons:", error);
       }
     },
-    // Carga los Pokémon favoritos desde el almacenamiento local
+    //Carga de los favoritos desde localstorage
     loadFavorites({ commit }) {
-      const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-      commit('setFavorites', favorites);
+      const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+      commit("setFavorites", favorites);
     },
-    // Alterna el estado de favorito de un Pokémon
+    //Manejo de favoritos
     toggleFavorite({ commit, state }, pokemon) {
-      if (state.favorites.some(fav => fav.name === pokemon.name)) {
-        commit('removeFavorite', pokemon);
+      if (state.favorites.some((fav) => fav.name === pokemon.name)) {
+        commit("removeFavorite", pokemon);
       } else {
-        commit('addFavorite', pokemon);
+        commit("addFavorite", pokemon);
       }
     },
   },
