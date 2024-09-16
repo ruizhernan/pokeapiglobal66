@@ -34,7 +34,7 @@ export default createStore({
       if (!state.favorites.some((fav) => fav.name === pokemon.name)) {
         state.favorites.push(pokemon);
         localStorage.setItem("favorites", JSON.stringify(state.favorites));
-        console.log("Added to favorites:", state.favorites);
+        // console.log("Added to favorites:", state.favorites);
       }
     },
     removeFavorite(state, pokemon) {
@@ -42,7 +42,7 @@ export default createStore({
         (fav) => fav.name !== pokemon.name
       );
       localStorage.setItem("favorites", JSON.stringify(state.favorites));
-      console.log("Removed from favorites:", state.favorites);
+      // console.log("Removed from favorites:", state.favorites);
     },
     setOffset(state, offset) {
       state.offset = offset;
