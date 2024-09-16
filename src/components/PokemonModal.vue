@@ -3,7 +3,12 @@
     <div class="modal-content">
       <button class="close-btn" @click="closeModal">X</button>
       <div class="pokemon-image-container">
-        <img v-if="pokemonImage" :src="pokemonImage" alt="Pokemon Image" class="pokemon-img" />
+        <img
+          v-if="pokemonImage"
+          :src="pokemonImage"
+          alt="Pokemon Image"
+          class="pokemon-img"
+        />
         <div v-else>Loading image</div>
       </div>
       <div class="pokemon-details">
@@ -13,10 +18,7 @@
         <p><strong>Types:</strong> {{ pokemon.types }}</p>
       </div>
       <div class="modal-footer">
-        <CustomButton 
-          text="Share to my friends"
-          @click="copyToClipboard"
-        />
+        <CustomButton text="Share to my friends" @click="copyToClipboard" />
         <FavoriteButton
           :isFavorite="isFavoriteStatus"
           @toggle-favorite="toggleFavorite(pokemon)"
@@ -37,7 +39,7 @@ import { getPokemonDetails } from "@/services/pokemonService";
 export default {
   components: {
     FavoriteButton,
-    CustomButton
+    CustomButton,
   },
   props: {
     pokemon: {
@@ -60,7 +62,7 @@ export default {
   computed: {
     isFavoriteStatus() {
       return this.$store.getters.isFavorite(this.pokemon.name);
-    }
+    },
   },
   watch: {
     isVisible(newVal) {
@@ -68,16 +70,17 @@ export default {
         this.fetchPokemonDetails();
       }
     },
-    'pokemon.name': function(newVal) {
+    "pokemon.name": function (newVal) {
       if (this.isVisible && newVal) {
         this.fetchPokemonDetails();
       }
-    }
+    },
   },
   methods: {
     closeModal() {
-      this.$emit('close');
+      this.$emit("close");
     },
+    //Consumo del servicio que hace fetch a la API
     async fetchPokemonDetails() {
       try {
         const data = await getPokemonDetails(this.pokemon.name);
@@ -86,22 +89,31 @@ export default {
         this.pokemon.height = data.height;
         this.pokemon.types = data.types;
       } catch (error) {
-        console.error('Error fetching Pokémon details: ', error);
+        console.error("Error fetching Pokémon details: ", error);
       }
     },
     toggleFavorite(pokemon) {
-      this.$store.dispatch('toggleFavorite', pokemon);
+      this.$store.dispatch("toggleFavorite", pokemon);
     },
     copyToClipboard() {
-      const pokemonData = `Name: ${this.pokemon.name}, Weight: ${this.pokemon.weight}, Height: ${this.pokemon.height}, Types: ${this.pokemon.types}`;
-      
-      navigator.clipboard.writeText(pokemonData).then(() => {
-        alert('Copied to clipboard!');
-      }).catch(err => {
+    const pokemonData = `Name: ${this.pokemon.name}, Weight: ${this.pokemon.weight}, Height: ${this.pokemon.height}, Types: ${this.pokemon.types}`;
+    navigator.clipboard
+      .writeText(pokemonData)
+      .then(() => {
+        this.$toast.success('Copied to clipboard!', {
+          position: 'top-right', 
+          duration: 3000,
+        });
+      })
+      .catch((err) => {
         console.error('Could not copy text: ', err);
+        this.$toast.error('Failed to copy!', {
+          position: 'top-right',
+          duration: 3000,
+        });
       });
-    }
-  }
+  },
+  },
 };
 </script>
 <style scoped>
@@ -188,11 +200,11 @@ export default {
   position: relative;
   width: 120%;
   height: 40vh;
-  background-image: url('@/assets/background.png');
+  background-image: url("@/assets/background.png");
   background-size: cover;
   background-position: center;
   margin: -20px;
   margin-bottom: 10px;
-  padding: 0 0; 
+  padding: 0 0;
 }
 </style>

@@ -1,31 +1,33 @@
 <template>
   <div class="pokemon-list">
-    <SearchBar v-model="searchTerm" />
-    <NoResults 
-      v-if="filteredPokemons.length === 0 && searchTerm" 
-      @go-back-home="goBackHome"
-    />
-    
-    <ul v-else class="list">
-      <PokemonItem 
-        v-for="pokemon in filteredPokemons" 
-        :key="pokemon.name" 
-        :pokemon="pokemon" 
-        @select="selectPokemon(pokemon)"
+    <div v-if="isLoading" class="loading-spinner">
+      <img src="@/assets/loading.png" alt="Loading" class="spinner-image" />
+    </div>
+    <div v-else>
+      <SearchBar v-model="searchTerm" />
+      <NoResults
+        v-if="filteredPokemons.length === 0 && searchTerm"
+        @go-back-home="goBackHome"
       />
-    </ul>
 
-    <PokemonModal 
-      v-if="selectedPokemon" 
-      :pokemon="selectedPokemon" 
-      :isVisible="isModalVisible"
-      @close="closeModal"
-    />
+      <ul v-else class="list">
+        <PokemonItem
+          v-for="pokemon in filteredPokemons"
+          :key="pokemon.name"
+          :pokemon="pokemon"
+          @select="selectPokemon(pokemon)"
+        />
+      </ul>
 
-    <NavBar 
-      @show-favorites="showFavorites" 
-      @show-all="showAllPokemons"
-    />
+      <PokemonModal
+        v-if="selectedPokemon"
+        :pokemon="selectedPokemon"
+        :isVisible="isModalVisible"
+        @close="closeModal"
+      />
+
+      <NavBar @show-favorites="showFavorites" @show-all="showAllPokemons" />
+    </div>
   </div>
 </template>
 
@@ -35,7 +37,7 @@ import PokemonItem from "@/components/PokemonItem.vue";
 import SearchBar from "@/components/SearchBar.vue";
 import NoResults from "@/components/NoResults.vue";
 import NavBar from "@/components/NavBar.vue";
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "PokemonList",
@@ -44,7 +46,7 @@ export default {
     PokemonModal,
     SearchBar,
     NoResults,
-    NavBar
+    NavBar,
   },
   data() {
     return {
@@ -52,19 +54,26 @@ export default {
       showFavoritesOnly: false,
       selectedPokemon: null,
       isModalVisible: false,
+      isLoading: true,
     };
   },
   computed: {
-    ...mapState(['pokemons', 'favorites']),
+    ...mapState(["pokemons", "favorites"]),
     filteredPokemons() {
-      let pokemonsToFilter = this.showFavoritesOnly ? this.pokemons.filter(pokemon => this.$store.getters.isFavorite(pokemon.name)) : this.pokemons;
-      return pokemonsToFilter.filter(pokemon =>
-        (pokemon.name || "").toLowerCase().includes((this.searchTerm || "").toLowerCase())
+      let pokemonsToFilter = this.showFavoritesOnly
+        ? this.pokemons.filter((pokemon) =>
+            this.$store.getters.isFavorite(pokemon.name)
+          )
+        : this.pokemons;
+      return pokemonsToFilter.filter((pokemon) =>
+        (pokemon.name || "")
+          .toLowerCase()
+          .includes((this.searchTerm || "").toLowerCase())
       );
-    }
+    },
   },
   methods: {
-    ...mapActions(['fetchPokemons', 'loadMorePokemons']),
+    ...mapActions(["fetchPokemons", "loadMorePokemons"]),
     updateSearchTerm(newSearchTerm) {
       this.searchTerm = newSearchTerm;
     },
@@ -85,11 +94,15 @@ export default {
       this.isModalVisible = true;
     },
     closeModal() {
-      this.isModalVisible = false; 
-    }
+      this.isModalVisible = false;
+    },
   },
-  mounted() {
-    this.fetchPokemons();
+  async mounted() {
+    try {
+      await this.fetchPokemons();
+    } finally {
+      this.isLoading = false;
+    }
   },
 };
 </script>
@@ -99,6 +112,28 @@ export default {
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.spinner-image {
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .list {

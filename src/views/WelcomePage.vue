@@ -6,15 +6,11 @@
       The digital encyclopedia created by Professor Oak is an invaluable tool to
       Trainers in the Pokémon world.
     </p>
-    <CustomButton 
-      text="Get Started"          
-      @click="goToList"
-    />
+    <CustomButton text="Get Started" @click="goToList" />
   </div>
 </template>
 
 <script>
-
 import CustomButton from "@/components/CustomButton.vue";
 
 export default {
@@ -23,8 +19,8 @@ export default {
     CustomButton,
   },
   methods: {
-    goToList(){
-      this.$router.push("/list")
+    goToList() {
+      this.$router.push("/list");
     },
   },
 };
@@ -53,7 +49,7 @@ h1 {
 p {
   width: 100%;
   font-size: 18px;
-  color: #5E5E5E;
+  color: #5e5e5e;
   max-width: 570px;
   margin: 0 auto;
   font-weight: 500;
