@@ -4,7 +4,7 @@ El proceso de desarrollo fue el siguiente:
 
 [1] - Se creó el proyecto y se dividieron las funcionalidades solicitadas en componentes individuales: lista, modal, bienvenida, y carga.
 
-[2] - Se organizó el desarrollo en diferentes ramas: una para cada funcionalidad, otra para refactorizaciones, y una más para las pruebas unitarias de los componentes y servicios
+[2] - Se organizó el desarrollo en diferentes ramas: una para cada funcionalidad y otra para refactorizaciones.
 
 [3] - Se configuró el router con las vistas necesarias.
 
