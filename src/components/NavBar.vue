@@ -2,13 +2,13 @@
   <div class="nav-bar">
     <CustomButton
       text="All"
-      icon="assets/list.png"
+      icon="../assets/list.png"
       :backgroundColor="'#BFBFBF'"
       @click="showAllPokemons"
     />
     <CustomButton
       text="Favorites"
-      icon="assets/seeFavs.png"
+      icon="../assets/seeFavs.png"
       @click="showFavorites"
     />
   </div>
