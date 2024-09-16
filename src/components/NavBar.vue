@@ -2,24 +2,32 @@
   <div class="nav-bar">
     <CustomButton
       text="All"
-      icon="../assets/list.png"
+      :icon="listIcon"
       :backgroundColor="'#BFBFBF'"
       @click="showAllPokemons"
     />
     <CustomButton
       text="Favorites"
-      icon="../assets/seeFavs.png"
+      :icon="favIcon"
       @click="showFavorites"
     />
   </div>
 </template>
 
 <script>
+import listIcon from '@/assets/list.png';
+import favIcon from '@/assets/seeFavs.png';
 import CustomButton from "@/components/CustomButton.vue";
 
 export default {
   components: {
     CustomButton,
+  },
+  data() {
+    return {
+      listIcon,
+      favIcon,
+    };
   },
   methods: {
     showFavorites() {
